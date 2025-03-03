@@ -19,9 +19,7 @@ test.describe('Fetching Data Tests', () => {
     console.log('Posts response status: ', postsResponse.status());
     console.log('Posts response url: ', postsResponse.url());
 
-    //console.log('Images response status: ', imagesResponse.status());
-    //console.log('Images response url: ', imagesResponse.url());
-   
+    
 
   });
 });
