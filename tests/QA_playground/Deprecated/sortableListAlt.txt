@@ -1,0 +1,88 @@
+import { test, expect, chromium } from '@playwright/test'
+
+test('Check correct order', async () => {
+
+  const browser = await chromium.launch({
+        args: ['--start-maximized'],
+    })
+    const context = await browser.newContext({
+        viewport: null,
+    })
+    const page = await context.newPage()
+    await page.goto('https://qaplayground.dev/apps/sortable-list/')
+    const correctOrder = [
+        'Jeff Bezos',
+        'Bill Gates',
+        'Warren Buffett',
+        'Bernard Arnault',
+        'Carlos Slim Helu',
+        'Amancio Ortega',
+        'Larry Ellison',
+        'Mark Zuckerberg',
+        'Michael Bloomberg',
+        'Larry Page',
+    ]
+    for (let i = 0; i < correctOrder.length; i++) {
+      const personName = correctOrder[i];
+      const targetPosition = i + 1;
+      await page.locator(`text=${personName}`).dragTo(page.locator(`.draggable-list li:nth-child(${targetPosition})`));
+     
+      try { //If the element is not found, the loop will retry until the element is in the correct position
+        
+        await expect(page.locator(`.draggable-list li:nth-child(${targetPosition}) .person-name`)).toHaveText(personName, { timeout: 100 });
+
+      } catch (error) {
+        
+        i--;
+      
+      }
+     
+    }
+    
+    
+    await page.getByRole('button', { name: 'Check Order' }).click()
+    const correctElements = page.locator('.draggable-list li.right .person-name')
+    await expect(correctElements).toHaveCount(10)
+})
+
+  test('Check incorrect order', async ({ page }) => {
+   
+     // Click the "Check Order" button
+    await page.getByRole('button', { name: 'Check Order' }).click();
+
+    // Confirm that at least one element's text is red in color
+    const incorrectElements = await page.locator('.draggable-list li.wrong .person-name');
+    let foundRedText = false;
+
+    for (let i = 0; i < await incorrectElements.count(); i++) {
+      const item = incorrectElements.nth(i);
+      const color = await item.evaluate(el => window.getComputedStyle(el).color);
+      console.log('Color:', color);
+      if (color === 'rgb(255, 56, 56)') { // Check if the color is red (#ff3838)
+        foundRedText = true;
+        break;
+      }
+    }
+
+    expect(foundRedText).toBe(true);
+
+    console.log('At least one element with red text verified');
+
+  });
+  
+
+
+/*
+
+const first = await page.locator(`.draggable-list li:nth-child(1)`);
+    const second = await page.locator(`.draggable-list li:nth-child(2)`);
+
+    console.log('First element:', await first.innerHTML());
+    console.log('Second element:', await second.innerHTML());
+    
+    await second.dragTo(first);
+
+    await page.pause(); */
+
+
+    
