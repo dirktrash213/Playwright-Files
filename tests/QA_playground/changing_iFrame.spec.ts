@@ -8,6 +8,7 @@ test.describe('Changing iFrame Tests', () => {
   test('Log times and verify end message', async ({ page }) => {
     // Wait for the first iframe to load
     let iframe = await page.frame({ name: 'frame1' });
+    let iframeHTML = await page.frame({ name: 'frame1' })?.content();
     await expect(iframe).not.toBeNull();
 
     if (iframe) {
@@ -20,12 +21,17 @@ test.describe('Changing iFrame Tests', () => {
         // Check if the iframe URL has changed
         const iframeUrl = iframe.url();
 
-        //console.log('iFrame url: ', iframeUrl);
+        console.log('iFrame url: ', iframeUrl);
+        console.log('iFrame HTML: ', iframeHTML);
 
-        if (iframeUrl.includes('iframe2')) {
+        //if (iframeUrl.includes('iframe2')) {
+        //if (iframeHTML && iframeHTML.includes('Second Iframe')) {
+        if (await iframe.getByText('This is the end of the journey').isVisible()) {
           countingDown = false;
           break;
         }
+
+       // await page.pause();
 
         const currentTime = iframe ? (await iframe.locator('#time').textContent()) || '' : '';
         if (currentTime !== previousTime) {

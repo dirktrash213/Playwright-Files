@@ -36,8 +36,8 @@ export default defineConfig({
 
     //screenshot: 'only-on-failure',
 
-    headless: true,
-    //headless: false,
+    //headless: true,
+    headless: false,
 
     launchOptions: {
      // slowMo: 300, // 300 milliseconds delay between each action
