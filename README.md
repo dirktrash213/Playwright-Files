@@ -1,4 +1,4 @@
-# Playwright Testing Project
+# Playwright Testing Playground
 
 This project contains automated tests for various web applications using Playwright. The tests cover functionalities such as file uploads, sortable lists, range sliders, and more.
 
@@ -79,12 +79,65 @@ reporter: [['html'], ['./custom-reporter']],
 ## Configuration
 The Playwright configuration is defined in the playwright.config.ts file. Key settings include:
 
-Test Directory: tests
-Parallel Execution: fullyParallel: false
-Retries: retries: process.env.CI ? 2 : 0
-Headless Mode: headless: true
-Trace Collection: trace: 'on-first-retry'
-Projects: Configured for Chromium, Firefox, and WebKit
+
+**Test Directory:**
+
+The default testing directory is ./tests, as indicated by the config setting
+
+```bash
+testDir: './tests'
+```
+
+**Parallel Execution:**
+
+By default, tests will run in parallel when not running in a CI environment.
+
+```bash
+fullyParallel: true
+```
+Change fullyParallel to false to disable parallel testing.
+
+**Retries:**
+
+The tests are set to retry twice upon failure in a CI environment, and 0 times in a non CI environment.
+
+```bash
+retries: process.env.CI ? 2 : 0
+```
+
+**Headless Mode:**
+
+Tests are set to run in headless mode by default. 
+
+```bash
+headless: true
+```
+
+In order to see the tests running in realtime, set headless to **false** in the **use** field.
+
+**Trace Collection:**
+
+Collects a trace when retrying a failed test. See https://playwright.dev/docs/trace-viewer
+
+```bash
+trace: 'on-first-retry'
+```
+
+**Launch Options**
+
+Other options can be set in the **launchOptions** field. For example, include
+
+```bash
+slowMo: 300,
+```
+
+in **launchOptions** to include a 300 millisecond delay between each action. Useful for debugging and analysing test flow.
+
+
+**Projects:**
+
+The tests are configured for Chromium, Firefox, and WebKit in the **projects** field.
+
 
 ## Custom Reporter
 The project includes a custom reporter (custom-reporter.ts) that logs the start and end of each test. The reporter is configured to log messages to the console.
